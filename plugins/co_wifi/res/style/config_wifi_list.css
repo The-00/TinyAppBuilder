@@ -1,0 +1,27 @@
+.button {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 26px;
+  margin: 4px 2px;
+  cursor: pointer;
+  width: 100%
+}
+.best {
+  background-color: #01D90A;
+}
+.ok {
+  background-color: #4CAF50;
+}
+.medium {
+  background-color: #BDA20E;
+}
+.bad {
+  background-color: #93261A;
+}
+.awfull {
+  background-color: #000;
+}
