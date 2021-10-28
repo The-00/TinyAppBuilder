@@ -1,18 +1,29 @@
 import json
-import tools.status
 
 
-class TABModule():
+
+class TABModule():    
     def __init__(self, app):
-        self._app = app
-        self._api_route = "/".join(self.__module__.split("."))
+        self._app = app        
+        self._route = ""
+
+        
+    def _add_route(self, route, method, callback):
+        while len(route)>0 and route[-1] == "/": route = route[:-1]
+        self._app.route(f'{self._route}/{route}', method=method, callback=callback)
+
+class TABModuleBack(TABModule):
+    def __init__(self, app):
+        super().__init__(app)
+        self._route = "/api/" + "/".join(self.__module__.split("."))
         self._default_route()
+
 
     def _default_route(self):
         # API SPECIAL
-        self._app.route(f'/api/{self._api_route}/config', method="POST", callback=self.config)
-        self._app.route(f'/api/{self._api_route}/status', method="GET",  callback=self.status)
-        self._app.route(f'/api/{self._api_route}/rights', method="GET",  callback=self.rights)
+        self._add_route(route='config', method="POST", callback=self.config)
+        self._add_route(route='status', method="POST", callback=self.status)
+        self._add_route(route='rights', method="POST", callback=self.rights)
 
     def status(self):
         return json.dumps({})
@@ -20,3 +31,8 @@ class TABModule():
         return json.dumps({})
     def rights(self):
         return json.dumps({})
+
+class TABModuleFront(TABModule):
+    def __init__(self, app):
+        super().__init__(app)
+        self._back = "/api/" + "/".join(self.__module__.split(".")[:-1]) + "/back"
