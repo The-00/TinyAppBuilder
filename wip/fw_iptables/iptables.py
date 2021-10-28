@@ -1,6 +1,5 @@
 from pyptables import default_tables, restore
 from pyptables.rules import Rule, Accept, Reject, Redirect, Return
-import tools.database as db
 import subprocess
 from bottle import get
 

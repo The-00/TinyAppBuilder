@@ -1,7 +1,6 @@
 import wifi
 import json
 import tools.style
-import tools.database
 
 class Wifi():
     def __init__(self, app):

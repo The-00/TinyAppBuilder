@@ -1,5 +1,4 @@
 from bottle import get
-import tools.database as db
 
 @get("/config")
 def test():
