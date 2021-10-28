@@ -35,8 +35,12 @@ def plugins(app):
         try:
             package = importlib.import_module(f"plugins.{module_name}", package="plugins")
             packages.append( package )
-            module = importlib.import_module(f"plugins.{module_name}.plugins", package="plugins")
-            modules.append( module )
+            for type_module in ["back", "front"]:
+                try:
+                    module = importlib.import_module(f"plugins.{module_name}.{type_module}", package="plugins")
+                    modules.append( module )
+                except Exception as e:
+                    print(e)
         except Exception as e:
             print(e)
 

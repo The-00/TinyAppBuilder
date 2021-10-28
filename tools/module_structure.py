@@ -6,10 +6,12 @@ class TABModule():
     def __init__(self, app):
         self._app = app        
         self._route = ""
+        self.__name__ = self.__module__
 
         
     def _add_route(self, route, method, callback):
         while len(route)>0 and route[-1] == "/": route = route[:-1]
+        while len(route)>0 and route[0]  == "/": route = route[1:]
         self._app.route(f'{self._route}/{route}', method=method, callback=callback)
 
 class TABModuleBack(TABModule):
