@@ -1,35 +1,27 @@
 import json
 import tools.module_structure
+import tools.style
+import requests
 
-class Status(tools.module_structure.TABModule):
+class StatusFront(tools.module_structure.TABModuleFront):
     def __init__(self, app):
         super().__init__(app)
-        self._route()
-
-    def _route(self):
-        self._app.route('/', method="GET", callback=self._getStatus)
+        self._add_route(route="/", method="GET", callback=self._getStatus)
 
     def _getStatus(self):
+        status_route  = requests.post(f"http://{self._app._host}{self._back}/route").json()["table"]
+        status_plugin = requests.post(f"http://{self._app._host}{self._back}/plugin").json()["table"]
 
-        plugins = self._app._plugins
-        status_plugins = [(pl.__name__, json.loads(pl.status())) for pl in plugins]
-        status_plugins_html = ""
-        for pl in status_plugins:
-            status_plugins_html += f"<table><tr><th>{pl[0]}</th></tr><tr><table>"
-            for k in pl[1]:
-                status_plugins_html += f"<tr><td>{k}</td><td>{pl[1][k]}</td></tr>"
-            status_plugins_html += "</table></tr></table><br>"
-
-        listRoutes = "<table><tr><th>method</th><th>rule</th><th>source</th></tr>" + "".join([ f"<tr><td>{r.method}</td><td>{r.rule}</td><td>{r.callback.__self__.__class__.__module__}</td></tr>"  for r in self._app.routes]) + "</table>"
-
+        status_route_html  = tools.style.html_table(tableHead=status_route["head"],  tableContent=status_route["content"] )
+        status_plugin_html = tools.style.html_table(tableHead=status_plugin["head"], tableContent=status_plugin["content"])
 
         return f"""
 <head><!--<meta http-equiv="refresh" content="5" >--></head>
 <body>
     <h1>STATUS PAGE</h1>
-    {listRoutes}
+    {status_route_html}
     <br><br>
-    {status_plugins_html}
+    {status_plugin_html}
 
 </body>
 """
