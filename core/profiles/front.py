@@ -6,4 +6,4 @@ class ProfileFront(tools.module_structure.TABModuleFront):
         self._add_route(route="profiles/",method="GET", callback=self._configProfiles)
 
     def _configProfiles(self):
-        return "<h1>configProfiles</h1>"
+        return "<h1>Config Profiles</h1>"
