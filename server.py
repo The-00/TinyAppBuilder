@@ -2,14 +2,17 @@ from bottle import Bottle
 from tools import load
 import sys
 
-
 app = Bottle()
 
 # setting path
 sys.path.append('.')
 
 # import core and plugins
-_,_,app._core = load.core(app)
-_,_,app._plugins =  load.plugins(app)
+core_package,core_module,core_class       = load.core(app)
+plugin_package,plugin_module,plugin_class = load.plugins(app)
 
-app.run(host='localhost', port=80)
+app._host    = "localhost"
+app._cores   = core_class
+app._plugins = plugin_class
+
+app.run(host=app._host, port=80, server='paste', reloader=True)
