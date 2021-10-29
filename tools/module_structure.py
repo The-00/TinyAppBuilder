@@ -26,14 +26,14 @@ class TABModuleBack(TABModule):
         # API SPECIAL
         self._add_route(route='config', method="POST", callback=self.config)
         self._add_route(route='status', method="POST", callback=self.status)
-        self._add_route(route='rights', method="POST", callback=self.rights)
+        self._add_route(route='permissions', method="POST", callback=self.permissions)
 
     def status(self):
         return json.dumps({})
     def config(self):
         return json.dumps({})
-    def rights(self):
-        return json.dumps({})
+    def permissions(self):
+        return json.dumps({"module": self.__module__, "permissions": [ r for r in self._app._rights if r.startswith(self.__module__)] })
 
 class TABModuleFront(TABModule):
     def __init__(self, app):

@@ -1,4 +1,5 @@
 import tools.module_structure
+from core.profiles.back import permission
 import os
 import bottle
 import json
@@ -9,7 +10,8 @@ class ShellBack(tools.module_structure.TABModuleBack):
         self._add_route("execute/<user>", "POST", self._execute)
         self._add_route("execute", "POST", self._execute)
         self.history = []
-        
+
+    @permission(["execute"])
     def _execute(self, user=None):
         request_parameters = json.load(bottle.request.body)
         
@@ -31,7 +33,3 @@ class ShellBack(tools.module_structure.TABModuleBack):
 
     def status(self):
         return json.dumps({"state":"Loaded", "history": self.history})
-    
-    def rights(self):
-        rights = ["shell._execute_root", "shell._execute"]
-        return json.dumps(rights)
