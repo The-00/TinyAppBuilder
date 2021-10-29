@@ -18,6 +18,7 @@ class TABModuleBack(TABModule):
     def __init__(self, app):
         super().__init__(app)
         self._route = "/api/" + "/".join(self.__module__.split("."))
+        self._database = self._app._database
         self._default_route()
 
 
