@@ -2,7 +2,6 @@ import tools.module_structure
 from core.profiles.back import permission
 import os
 import bottle
-import json
 
 class ShellBack(tools.module_structure.TABModuleBack):
     def __init__(self, app):
@@ -11,7 +10,7 @@ class ShellBack(tools.module_structure.TABModuleBack):
         self._add_route("execute", "POST", self._execute)
         self.history = []
 
-    @permission(["execute"])
+    @permission("execute")
     def _execute(self, user=None):
         request_parameters = json.load(bottle.request.body)
         
@@ -23,7 +22,7 @@ class ShellBack(tools.module_structure.TABModuleBack):
         if "command" in request_parameters:
             return json.dumps( self.__execute_command(user, request_parameters["command"]))
         else:
-            return json.dumps({"state":"not ok","result":"no command provided"})
+            return {"state":"not ok","result":"no command provided"}
 
     def __execute_command(self, user, command):
         if user != "root": command = f'su {user} -s "/bin/sh" -c "{command}"'
@@ -32,4 +31,4 @@ class ShellBack(tools.module_structure.TABModuleBack):
         return {"state":"ok","result":result}
 
     def status(self):
-        return json.dumps({"state":"Loaded", "history": self.history})
+        return {"state":"Loaded", "history": self.history}

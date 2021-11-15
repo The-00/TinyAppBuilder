@@ -1,10 +1,7 @@
-import json
-
-
 
 class TABModule():    
     def __init__(self, app):
-        self._app = app        
+        self._app = app
         self._route = ""
         self.__name__ = self.__module__
 
@@ -29,13 +26,22 @@ class TABModuleBack(TABModule):
         self._add_route(route='permissions', method="POST", callback=self.permissions)
 
     def status(self):
-        return json.dumps({})
+        return {}
     def config(self):
-        return json.dumps({})
+        return {}
     def permissions(self):
-        return json.dumps({"module": self.__module__, "permissions": [ r for r in self._app._rights if r.startswith(self.__module__)] })
+        return {"module": self.__module__, "permissions": [ r for r in self._app._rights if r.startswith(self.__module__)] }
 
 class TABModuleFront(TABModule):
     def __init__(self, app):
         super().__init__(app)
-        self._back = "/api/" + "/".join(self.__module__.split(".")[:-1]) + "/back"
+        
+        back_module_name = ".".join(self.__module__.split('.')[:-1]) + ".back"
+        back_module_type = self.__module__.split('.')[0]
+        list_modules = app._cores if back_module_type == "core" else app._plugins
+        self._back = None
+        for m in list_modules:
+            if m.__name__ == back_module_name:
+                self._back = m
+                
+        self._back_route = "/api/" + "/".join(self.__module__.split(".")[:-1]) + "/back"

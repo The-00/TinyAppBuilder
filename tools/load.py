@@ -5,7 +5,8 @@ import os
 def core(app):
     packages = [ importlib.import_module('core') ]
     modules = []
-    for module_name in os.listdir('core'):
+    app._cores = []
+    for module_name in ["profiles", "users", "database", "status", "plugin_manager"]:
         try:
             package = importlib.import_module(f"core.{module_name}", package="core")
             packages.append( package )
@@ -13,20 +14,18 @@ def core(app):
                 try:
                     module = importlib.import_module(f"core.{module_name}.{type_module}", package="core")
                     modules.append( module )
+                        
+                    for x in dir(module):
+                        obj = getattr(module, x)
+                        if inspect.isclass(obj):
+                            print( "loading core:", obj )
+                            app._cores.append( obj(app) )
                 except Exception as e:
-                    print(e)
+                    print(e)                    
         except Exception as e:
             print(e)
 
-    core = []
-    for module in modules:
-        for x in dir(module):
-            obj = getattr(module, x)
-            if inspect.isclass(obj):
-                print( "loading core:", obj )
-                core.append( obj(app) )
-
-    return packages, modules, core
+    return packages, modules, app._cores
 
 def plugins(app):
     packages = [ importlib.import_module('plugins') ]

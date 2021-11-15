@@ -5,5 +5,12 @@ class UserFront(tools.module_structure.TABModuleFront):
         super().__init__(app)
         self._add_route(route="/users",method="GET", callback=self._configProfiles)
 
+    def _login(self):
+        pass
+    
+    def _diconnect(self):
+        pass
+    
+
     def _configProfiles(self):
         return "<h1>Config Users</h1>"

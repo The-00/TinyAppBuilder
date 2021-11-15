@@ -3,14 +3,16 @@ import requests
 import bottle
 import bcrypt
 import json
+from core.profiles.back import permission
 
 class UserBack(tools.module_structure.TABModuleBack):
     def __init__(self, app):
         super().__init__(app)
-        self._add_route("get", "POST", self._users)
+        self._add_route("list", "POST", self._users)
         self._add_route("add", "POST", self._add)
         self._add_route("install", "POST", self._installation)
 
+    @permission("install")
     def _installation(self):
         res = requests.post(f"http://{self._app._host}{self._database}/sql",
                       json={"request": '''CREATE TABLE IF NOT EXISTS users (
@@ -22,7 +24,8 @@ class UserBack(tools.module_structure.TABModuleBack):
                                 }
                       )
         return res
-                        
+    
+    @permission("add")       
     def _add(self):
         body = json.load(bottle.request.body)
         if "user" not in body:
@@ -42,6 +45,7 @@ class UserBack(tools.module_structure.TABModuleBack):
                       )
         return res
     
+    @permission("list")
     def _users(self):
         users = requests.post(f"http://{self._app._host}{self._database}/sql",
                       json={"request": "SELECT * FROM users"}
